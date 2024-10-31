@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Run terraform configuration
+      ansible.builtin.shell: "ls -ltrh"
+      register: test
+    
+    - debug: 
+        msg: "FIRST"   
+
+---
+
+- hosts: localhost
+  tasks:
+    - name: Run terraform configuration
+      ansible.builtin.shell: "bash TARGET_NODE/test.sh"
+      register: test
+    - debug: 
+        msg: "SECOND"

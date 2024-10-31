@@ -1,0 +1,64 @@
+--- # scalars
+s: version                 # a string
+a: 123                     # an integer
+b: "123"                   # a string, disambiguated by quotes
+c: 123.0                   # a float
+d: !!float 123             # also a float via explicit data type prefixed by (!!)
+e: !!str 3.6               # a string, disambiguated by explicit type
+f: !!str Yes              # a string via explicit type
+g: Yes                     # a Boolean True (yaml1.1), string "Yes" (yaml1.2)
+h: Yes we have No bananas  # a string, "Yes" and "No" disambiguated by context.
+
+name: value
+
+## what to qoute??
+--- # Block
+no: prob{lem,
+also: f]ine
+
+--- # Flow
+{
+  please: 'quo{te,',
+  me: 't]oo'
+}
+
+--- ## multi-line
+multi-line-str: |
+  I am a multi
+  -line string
+
+multi-line-str: >
+  Also a multi
+  -line string
+
+--- # base-64 encoded
+picture: !!binary |
+  R0lGODdhDQAIAIAAAAAAANn
+  Z2SwAAAAADQAIAAACF4SDGQ
+  ar3xxbJ9p0qa7R0YxwzaFME
+  1IAADs=
+
+
+--- # Indented Block1 (Mapping)
+person:
+  name: John Smith
+  age: 33
+--- # Inline Block
+person: {name: John Smith, age: 33}
+
+--- # Shopping list (Sequence)
+[milk, pumpkin pie, eggs, juice]
+
+--- # Favorite movies
+- Casablanca
+- North by Northwest
+- The Man Who Wasn't There
+## with names
+---
+parents:
+  - dad:
+    name: "asqar"
+    age: 50
+  - mom
+    name: "soqra"
+    age: 48
