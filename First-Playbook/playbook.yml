@@ -13,10 +13,8 @@
     
     #  legacy way of running shell commands (for specific use-cases e.g (piping , etc))
     - name: Get hostnames
-      shell: 
-        cmd: ls 
-        chdir: /home/
-      register: ls
+      shell: hostname
+      register: ls #capture task output
 
     # the better module to execute shell commands or scripts.
     - name: Get hostnames
@@ -27,6 +25,8 @@
       debug:
         var: ls.stdout
 
-    - name: exit ansible
+    - name: exit ansible with a message
       fail:
         msg: "EXITED :)"
+
+    ## tasks after fail won't get executed
