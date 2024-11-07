@@ -1,0 +1,14 @@
+---
+
+- name: Probing Modules
+  hosts: large
+  tasks:
+    - name: list files and directories
+      shell: 
+        cmd: ls
+        chdir: /home/
+      register: files
+
+    - name: show the files
+      debug:
+        var: files.stdout
