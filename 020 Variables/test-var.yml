@@ -1,0 +1,12 @@
+---
+
+favcolor: red
+
+favteams:
+  Iran: "PER"
+  England: "Liverpool" 
+
+servers:
+  - node001
+  - node002
+  - node003
