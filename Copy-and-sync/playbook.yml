@@ -1,0 +1,39 @@
+- name: intro to synchronize and copy module
+  hosts: large
+  vars:
+    home_dir : "{{playbook_dir}}"
+    target_dir: "/home/ubuntu"
+    base_dir: "/home/ubuntu"
+  tasks:
+    # - name: show playbook_dir value
+    #   debug:
+    #     msg: "this is playbook_dir value: {{home_dir}}"
+
+    - name: change ownership to ubuntu
+      become: true
+      file:
+        path: "{{base_dir}}"
+        owner: ubuntu
+        group: ubuntu
+        state: directory
+      register: output
+
+    - name: Copy this directory into the target
+      become: true
+      copy:
+        src: "{{home_dir}}"
+        dest: "{{target_dir}}"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
+    - name: remove text.txt
+      file:
+        path: "{{target_dir}}/Copy-and-sync/test.txt"
+        state: absent
+
+    - name: copy this directory excluding text.txt
+      ansible.posix.synchronize:
+        src: "{{home_dir}}"
+        dest: "{{target_dir}}"
+        rsync_opts:
+          - "--exclude=test.txt"
