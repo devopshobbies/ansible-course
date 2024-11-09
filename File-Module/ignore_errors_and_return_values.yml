@@ -1,0 +1,33 @@
+- name: intro to file module
+  hosts: large
+  vars:
+    base_dir: /home/ubuntu
+  tasks:
+    - name: change ubuntu ownership to root
+      file:
+        path: "{{base_dir}}"
+        owner: ubuntu
+        group: ubuntu
+        state: directory
+      ignore_errors: true
+      register: output
+    
+    - name: create a file
+      become: true
+      file:
+        path: "{{base_dir}}/test-file.txt"
+        mode: '0655'
+        state: absent
+    
+    - name: create a directory
+      file:
+        path: "{{base_dir}}/test_dir"
+        mode: '0755'
+        owner: ubuntu
+        group: ubuntu
+        state: directory
+    
+    - name: debug issues
+      debug:
+        var : output
+      when: output.failed

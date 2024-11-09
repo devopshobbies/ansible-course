@@ -1,0 +1,15 @@
+- name: intro to file module
+  hosts: large
+  vars:
+    base_dir: /home/ubuntu
+  tasks:
+    - name: run a command
+      command:
+        cmd: touch /root/new.txt
+      ignore_errors: true
+      register: result
+
+    - name: check the result
+      debug:
+        var: result
+      when: result.rc != 0
