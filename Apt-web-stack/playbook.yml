@@ -1,0 +1,22 @@
+- name: Intro to apt with nginx and nodeJs installation
+  hosts: webservers
+  become: true
+  tasks:
+    - name: update apt packages
+      apt:
+        update_cache: true
+    
+    - name: make sure nginx is present
+      apt:
+        name: nginx
+        state: present
+
+    - name: make sure nginx is absent
+      apt:
+        name: nginx
+        state: absent
+
+    # - name: remove unnecessary packages
+    #   apt:
+    #     autoremove: true
+    #     purge: true
