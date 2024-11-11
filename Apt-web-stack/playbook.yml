@@ -11,10 +11,20 @@
         name: nginx
         state: present
 
-    - name: make sure nginx is absent
+    - name: add nodeJs apt key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+  
+    - name: add NodeJs 16 repo
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_16.x focal main
+        state: present
+
+    - name: install nodeJS
       apt:
-        name: nginx
-        state: absent
+        name: nodejs
+        state: latest
 
     # - name: remove unnecessary packages
     #   apt:
