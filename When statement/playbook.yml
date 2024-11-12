@@ -1,0 +1,41 @@
+- name: Intro to conditionals in Ansible with `WHEN`
+  hosts: webservers
+  become: true
+  vars:
+    # update: true
+    httpd: false
+    nginx : false
+  tasks:
+    - name: show ansible_facts
+      debug:
+        var: ansible_facts.os_family
+    
+    - name: update apt packages with and
+      apt:
+        update_cache: true
+      when: ansible_facts["os_family"] == "Debian" and update | bool
+
+    - name: update apt packages with and in list of conditions
+      apt:
+        update_cache: true
+      when: 
+        - ansible_facts["os_family"] == "Debian"
+        - update | bool
+
+    - name: make sure nginx is present with or
+      apt:
+        name: nginx
+        state: present
+      when: ansible_facts.os_family == "Debian" or not httpd
+
+    - name: make sure nginx is present with bool
+      apt:
+        name: nginx
+        state: present
+      when: update or nginx | bool
+      
+    - name: nested conditions
+      debug:
+        msg: "this is a nested condition!"
+      when : (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6") or
+          (ansible_facts['distribution'] == "Debian" and ansible_facts['distribution_major_version'] == "7")
