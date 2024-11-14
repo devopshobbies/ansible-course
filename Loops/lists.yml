@@ -1,0 +1,27 @@
+- name: Intro to looping with lists.
+  hosts: webservers
+  become: true
+  vars_files:
+    - "vars.yml"
+  tasks:
+    - name: create a list of sudoers
+      user:
+        name: "{{item}}"
+        state: present
+        shell: /bin/bash
+        group: dev
+      loop: "{{users}}"
+
+    - name: create a list of sudoers with_items
+      user:
+        name: "{{item}}"
+        state: present
+        shell: /bin/bash
+        group: sudo
+      with_items: 
+        - "{{users}}"
+
+    - name: get all the hosts in webservers group
+      debug:
+        msg: "{{item}} is in the webservers"
+      loop: '{{ query("inventory_hostnames", "webservers") }}'
