@@ -2,7 +2,7 @@
   hosts: webservers
   become: true
   vars:
-    # update: true
+    update: false
     httpd: false
     nginx : false
   tasks:

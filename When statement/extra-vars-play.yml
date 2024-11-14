@@ -1,0 +1,25 @@
+- name: Intro to conditionals in Ansible with `WHEN`
+  hosts: webservers
+  become: true
+  vars:
+    # DEBUG: true
+  tasks:
+    - name: show debug value if exists
+      debug:
+        msg: "this is defined the value of DEBUG: {{DEBUG}}"
+      when: DEBUG is defined
+
+    - name: show debug value if exists
+      debug:
+        msg: "this is not defined!!"
+      when: DEBUG is not defined
+
+    - name: assign a default value if var was not defined
+      debug: 
+        msg: "this is defined the value of DEBUG"
+      when: DEBUG | default(false)
+
+    - name: assign a default value if var was not defined
+      debug: 
+        msg: "this is defined the value of DEBUG"
+      when: DEBUG or DEV | bool 
