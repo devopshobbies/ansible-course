@@ -9,7 +9,7 @@
         name: "{{item}}"
         state: present
         shell: /bin/bash
-        group: dev
+        group: sudo
       loop: "{{users}}"
 
     - name: create a list of sudoers with_items
@@ -25,3 +25,7 @@
       debug:
         msg: "{{item}} is in the webservers"
       loop: '{{ query("inventory_hostnames", "webservers") }}'
+
+    - name: get all the hosts in webservers group
+      debug:
+        msg: "{{groups.all}}"
