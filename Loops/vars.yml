@@ -2,3 +2,40 @@ users:
   - asqar
   - bob
   - arian
+
+group_list:
+  - dev
+  - prod
+
+users_dict:
+  developer:
+    name: asqar
+    group: dev
+  devops:
+    name: faezeh
+    group: prod
+
+users_dict_no_key:
+  - name: asqar
+    group: dev
+  - name: faezeh
+    group: prod
+
+
+packages:
+  - nginx
+  - apache2
+
+
+services:
+  webservers:
+    - name: apache2
+      state: stopped
+      enabled: no
+
+    - name: nginx
+      state: restarted
+      enabled: yes
+  
+url: "http://localhost:80"
+file_dest: "/home/ubuntu/root.html"
