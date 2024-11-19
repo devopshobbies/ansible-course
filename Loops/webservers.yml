@@ -1,0 +1,44 @@
+- name: Intro to looping with dicts and hashes.
+  hosts: webservers
+  become: true
+  vars_files:
+    - "vars.yml"
+  gather_facts: no
+  tasks:
+    - name: make sure services are installed
+      become: true
+      apt:
+        name: "{{item}}"
+        state: present
+      loop: "{{packages}}"
+
+    - name: show services variable 
+      debug:
+        msg: "{{services.webservers}}"
+    
+    - name: make sure services are on the demanded state
+      become: true
+      ansible.builtin.service:
+        name: "{{item.name}}"
+        state: "{{item.state}}"
+        enabled: "{{item.enabled}}"
+      loop: "{{services.webservers}}"
+      loop_control:
+        label: "{{item.name}} is the package name"
+
+    # - name: get the localhost index
+    #   get_url:
+    #     url: "{{url}}"
+    #     dest: "{{file_dest}}"
+
+    - name: make sure the file is absent on localhost
+      file:
+        name: "{{playbook_dir}}/index.html"
+        state: absent
+      delegate_to: localhost
+
+    - name: fetch localhost index file
+      fetch:
+        src: "{{file_dest}}"
+        dest: "{{playbook_dir}}/index.html"
+        flat: yes
