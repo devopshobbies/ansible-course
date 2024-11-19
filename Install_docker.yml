@@ -1,5 +1,7 @@
 - name: Install docker community edition (Credits goes to https://github.com/RoninAngle1)
   hosts: localhost
+  var_files:
+    - "./vars.yml"
   tasks:      
     - name: Install required packages (Debian/Ubuntu)
       apt:
@@ -69,7 +71,7 @@
         name: "{{ user_name }}"
         groups: docker
         append: yes
-      when: docker_user != ''
+      when: user_name != ''
 
     - name: Install Docker Compose v2
       shell: |
