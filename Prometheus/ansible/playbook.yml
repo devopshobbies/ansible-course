@@ -1,0 +1,42 @@
+- name: intro to synchronize and copy module
+  hosts: webservers
+  vars_files:
+    - "./vars.yml"
+  tasks:
+    - name: copy base directory excluding ansible
+      ansible.posix.synchronize:
+        src: "{{base_dir}}"
+        dest: "{{dest_dir}}"
+        rsync_opts:
+          - "--exclude=ansible/"
+    
+    - name: check if docker compose exists
+      command: which docker-compose
+      register : result
+    
+    - template:
+        src: template/prometheus.j2
+        dest: "{{compose_file}}"
+      
+
+    - name: deploy prometheus docker compose
+      become: true
+      command: docker compose -f "{{compose_file}}" up -d
+      when: result.rc == 0
+    
+    - name: ensure the container is running
+      become: true
+      docker_container:
+        name: "{{container_name | default('prometheus-main')}}"
+      register: container
+    
+    # - name: debug container
+    #   debug:
+    #     msg: "{{container.container.State}}"
+
+    # - debug:
+    #     msg: "{{ lookup('env', 'STACK') | default('prod')}}"
+      
+    - fail:
+        msg: "container is not running"
+      when: not container.container.State.Running 

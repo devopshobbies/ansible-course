@@ -1,0 +1,25 @@
+version : !!str 3.6 
+
+services:
+  prometheus:
+    container_name: prometheus-main
+    image: prom/prometheus:v2.46.0
+    network_mode: host
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/share/prometheus/console/libraries_web
+      - --web.enable-lifecycle
+    volumes:
+      - prometheus_data:/prometheus
+      - type: "bind"
+        source: ../prometheus-config/
+        target: /etc/prometheus
+        read_only: true
+        bind:
+          propagation: shared
+        consistency: cached
+    restart: always
+
+volumes:
+  prometheus_data:
