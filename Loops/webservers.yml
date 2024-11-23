@@ -26,10 +26,10 @@
       loop_control:
         label: "{{item.name}} is the package name"
 
-    # - name: get the localhost index
-    #   get_url:
-    #     url: "{{url}}"
-    #     dest: "{{file_dest}}"
+    - name: get the localhost index
+      get_url:
+        url: "{{url}}"
+        dest: "{{file_dest}}"
 
     - name: make sure the file is absent on localhost
       file:

@@ -27,6 +27,14 @@
         name: "{{item}}"
         state: present
       loop: "{{packages}}"
+
+
+
+
+
+
+
+
     
     - name: create virtualenv
       shell: pyenv virtualenv "{{venv_name}}"
@@ -49,6 +57,11 @@
         requirements: requirements.txt
         virtualenv: "{{pyvenv_path}}"
         chdir: "{{repo_path}}"
+
+
+
+
+        
 
     - include_tasks: "{{playbook_dir}}/kill_processes.yml"
 

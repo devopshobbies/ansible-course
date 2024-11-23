@@ -1,0 +1,6 @@
+---
+# tasks file for cxp
+
+- name: debug our first task
+  debug:
+    msg: "{{role_path}}"

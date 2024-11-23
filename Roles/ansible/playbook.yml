@@ -1,0 +1,4 @@
+- hosts: localhost
+  roles:
+    - cxp
+    - geerlingguy.docker
