@@ -1,0 +1,43 @@
+- name: Install Docker (Debian/Ubuntu)
+  apt:
+    name: docker-ce
+    state: present
+    update_cache: yes
+  notify: Start and enable Docker service
+  changed_when: yes
+  when: ansible_os_family == "Debian"
+
+- name: Add Docker repository (RedHat/CentOS)
+  yum_repository:
+    name: docker
+    description: Docker Repository
+    baseurl: https://download.docker.com/linux/centos/7/x86_64/stable
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    state: present
+  
+  when: ansible_os_family == "RedHat"
+  
+
+- name: Install Docker (RedHat/CentOS)
+  yum:
+    name: docker-ce
+    state: present
+  notify: Start and enable Docker service
+  when: ansible_os_family == "RedHat"
+
+
+- name: Add user to Docker group
+  user:
+    name: "{{ user_name }}"
+    groups: docker
+    append: yes
+  when: user_name != ''
+
+- name: Install Docker Compose v2
+  shell: |
+    curl -L "https://github.com/docker/compose/releases/download/{{ lookup('env', 'DOCKER_COMPOSE_VERSION') | default('2.19.0') }}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+  args:
+    creates: /usr/local/bin/docker-compose
+

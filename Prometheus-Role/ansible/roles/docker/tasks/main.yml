@@ -1,0 +1,8 @@
+
+- include_tasks: "{{task_dir}}/install-deps.yml"
+
+- include_tasks: "{{task_dir}}/add-docker-repo-key.yml"
+
+- include_tasks: "{{task_dir}}/install-docker.yml"
+
+- include_tasks: "{{task_dir}}/verify-installation.yml"

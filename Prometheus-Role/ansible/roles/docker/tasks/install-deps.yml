@@ -1,0 +1,21 @@
+- name: Install required packages (Debian/Ubuntu)
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+  when: ansible_os_family == "Debian"
+
+- name: Install required packages (RedHat/CentOS)
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+  when: ansible_os_family == "RedHat"

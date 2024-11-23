@@ -1,0 +1,15 @@
+- name: Verify Docker installation
+  command: docker --version
+  register: docker_version
+
+- name: Verify Docker Compose installation
+  command: docker-compose --version
+  register: docker_compose_version
+
+- name: Print Docker version
+  debug:
+    msg: "Docker version installed: {{ docker_version.stdout }}"
+
+- name: Print Docker Compose version
+  debug:
+    msg: "Docker Compose version installed: {{ docker_compose_version.stdout }}"
