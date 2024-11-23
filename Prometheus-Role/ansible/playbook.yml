@@ -1,0 +1,14 @@
+- name: prometheus role
+  hosts: webservers
+  become: true
+  roles:
+    # - role: docker
+    #   environment:
+    #     http_proxy: "{{proxy}}"
+    #     https_proxy: "{{proxy}}"
+    #     HTTP_PROXY: "{{proxy}}"
+    #     HTTPS_PROXY: "{{proxy}}"
+    #   vars:
+    #     proxy: "{{lookup('env', 'PROXY')}}"
+    
+    - webserver
