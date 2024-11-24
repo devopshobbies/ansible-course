@@ -1,0 +1,13 @@
+base_dir: "{{playbook_dir | dirname }}"
+dest_dir: "/home/ubuntu"
+target_dir: "{{dest_dir}}/Prometheus"
+compose_file: "{{target_dir}}/docker/prometheus.yml"
+container_name: prometheus-main
+image_name: prom/prometheus:v2.46.0
+restart_policy: '{{ lookup("env", "RESTART") }}'
+files_dir: '{{role_path}}/files'
+prometheus_config_source: "../prometheus-config/"
+task_dir: "{{role_path}}/tasks"
+
+
+prom_reload_url: http://localhost:9090/-/reload

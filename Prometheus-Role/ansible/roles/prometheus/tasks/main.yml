@@ -1,0 +1,2 @@
+- include_tasks: "{{task_dir}}/transfer-files-and-templates.yml"
+- include_tasks: "{{task_dir}}/deploy-prometheus.yml"

@@ -1,0 +1,11 @@
+- name: reload prometheus server
+  uri:
+    url: "{{prom_reload_url}}"
+    method: POST
+
+- name: check cxp in prom-config
+  wait_for:
+    path: "{{files_dir}}/prometheus-config/prometheus.yml"
+    search_regex: container-exporter
+    state: present
+  delegate_to: localhost

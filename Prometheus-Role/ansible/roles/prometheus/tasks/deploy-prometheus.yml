@@ -1,0 +1,22 @@
+- name: deploy prometheus docker compose
+  become: true
+  command: docker compose -f "{{compose_file}}" up -d
+  notify: 
+    - check cxp in prom-config
+
+- name: ensure the container is running
+  become: true
+  docker_container:
+    name: "{{container_name}}"
+  register: container
+    
+    # - name: debug container
+    #   debug:
+    #     msg: "{{container.container.State}}"
+
+    # - debug:
+    #     msg: "{{ lookup('env', 'STACK') | default('prod')}}"
+      
+- fail:
+    msg: "container is not running"
+  when: not container.container.State.Running 

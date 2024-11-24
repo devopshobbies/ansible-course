@@ -1,0 +1,12 @@
+- name: copy prometheus config directory
+  copy:
+    src: "{{files_dir}}/prometheus-config"
+    dest: "{{target_dir}}"
+  notify: reload prometheus server
+
+- name: optionaly don't wait for the end, run hanlders anyway anywhere
+  meta: flush_handlers
+
+- template:
+    src: prometheus.j2
+    dest: "{{compose_file}}"

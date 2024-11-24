@@ -1,14 +1,29 @@
 - name: prometheus role
   hosts: webservers
   become: true
+  pre_tasks:
+    - command: which docker
+      changed_when: false
+      register: docker_version
+      
+    - name: check cxp in prom-config
+      wait_for:
+        path: "{{playbook_dir}}/roles/prometheus/files/prometheus-config/prometheus.yml"
+        search_regex: container-exporter
+        state: present
+        timeout: 30
+      delegate_to: localhost
+      
   roles:
-    # - role: docker
-    #   environment:
-    #     http_proxy: "{{proxy}}"
-    #     https_proxy: "{{proxy}}"
-    #     HTTP_PROXY: "{{proxy}}"
-    #     HTTPS_PROXY: "{{proxy}}"
-    #   vars:
-    #     proxy: "{{lookup('env', 'PROXY')}}"
-    
-    - webserver
+    - role: docker
+      environment:
+        http_proxy: "{{proxy}}"
+        https_proxy: "{{proxy}}"
+        HTTP_PROXY: "{{proxy}}"
+        HTTPS_PROXY: "{{proxy}}"
+      vars:
+        proxy: "{{lookup('env', 'PROXY')}}"
+        dc_version: "{{dc_version}}"
+      when: docker_version.rc != 0
+      
+    - prometheus
