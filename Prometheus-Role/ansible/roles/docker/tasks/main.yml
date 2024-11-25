@@ -1,8 +1,22 @@
+# - command: which docker
+#   changed_when: false
+#   register: docker_version
+
+# - name: check if docker compose exists
+#   command: which docker-compose
+#   changed_when: false
+#   register : dc_version
 
 - include_tasks: "{{task_dir}}/install-deps.yml"
-
+  when: docker_version.rc != 0
 - include_tasks: "{{task_dir}}/add-docker-repo-key.yml"
+  when: docker_version.rc != 0
 
 - include_tasks: "{{task_dir}}/install-docker.yml"
+  when: docker_version.rc != 0
 
 - include_tasks: "{{task_dir}}/verify-installation.yml"
+  when: docker_version.rc != 0
+  
+- include_tasks: "{{task_dir}}/install-dc.yml"
+  when: dc_version.rc != 0
