@@ -1,0 +1,8 @@
+target_dir: "{{dest_dir}}/Prometheus"
+base_dir: "{{playbook_dir | dirname }}"
+dest_dir: "/home/ubuntu"
+task_dir: "{{role_path}}/tasks"
+files_dir: '{{role_path}}/files'
+pyvenv_path: "{{ansible_facts['env']['HOME'] }}/.pyenv/versions/{{ venv_name }}"
+PATH_PY: "/home/{{ ansible_user }}/.pyenv/bin:/home/{{ ansible_user }}/.pyenv/shims:{{ ansible_facts.env.PATH }}"
+proxy: "{{lookup('env', 'PROXY')}}"
