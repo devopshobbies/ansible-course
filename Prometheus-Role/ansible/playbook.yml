@@ -1,10 +1,20 @@
-- name: prometheus role
-  hosts: webservers
+- name: 
+  hosts: monitoring
   become: true
+  gather_facts: true
+  vars:
+    proxy_environment:
+      http_proxy: "{{ proxy }}"
+      https_proxy: "{{ proxy }}"
+      HTTP_PROXY: "{{ proxy }}"
+      HTTPS_PROXY: "{{ proxy }}"
+
   pre_tasks:
     - command: which docker
       changed_when: false
       register: docker_version
+      tags:
+        - docker
       
     - name: check cxp in prom-config
       wait_for:
@@ -14,16 +24,49 @@
         timeout: 30
       delegate_to: localhost
       
-  roles:
-    - role: docker
-      environment:
-        http_proxy: "{{proxy}}"
-        https_proxy: "{{proxy}}"
-        HTTP_PROXY: "{{proxy}}"
-        HTTPS_PROXY: "{{proxy}}"
+  tasks:
+    - setup:
+      tags: gather_facts
+
+    
+    - name: Ensure Docker role is applied to node003 if needed
+      import_role:
+        name: docker
       vars:
-        proxy: "{{lookup('env', 'PROXY')}}"
-        dc_version: "{{dc_version}}"
+        dc_version: "{{ dc_version }}"
+      environment: "{{ proxy_environment }}"
       when: docker_version.rc != 0
-      
-    - prometheus
+      delegate_to: node003
+      tags:
+        - docker
+        - dev
+
+    - name: Apply Prometheus role to node003
+      import_role:
+        name: prometheus
+      delegate_to: node003
+      tags:
+        - prometheus
+
+    - name: Apply container-exporter role to node003
+      delegate_to: node003
+      import_role:
+        name: container-exporter
+      environment:
+        PATH: "{{ PATH_PY }}"
+        http_proxy: "{{ proxy }}"
+        https_proxy: "{{ proxy }}"
+        HTTP_PROXY: "{{ proxy }}"
+        HTTPS_PROXY: "{{ proxy }}"
+      tags:
+        - cxp
+
+    - name: Apply webserver role to node002
+      import_role:
+        name: webserver
+      environment: "{{ proxy_environment }}"
+      delegate_to: node002
+      when: inventory_hostname == 'node002'
+      tags:
+        - webserver
+        - skip_in_staging
