@@ -9,14 +9,20 @@
   docker_container:
     name: "{{container_name}}"
   register: container
-    
+
+
+- block:
+    - shell: docker ps
+      register: test
     # - name: debug container
     #   debug:
     #     msg: "{{container.container.State}}"
 
     # - debug:
     #     msg: "{{ lookup('env', 'STACK') | default('prod')}}"
-      
+  rescue:
+    - debug:
+        msg: "command failed"
 - fail:
     msg: "container is not running"
   when: not container.container.State.Running 
