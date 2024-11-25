@@ -1,0 +1,17 @@
+- name: kill_cxp_proc 
+  become: true
+  shell: "ps -ef | grep -v grep | grep -w container_exporter | awk '{print $2}' | tee /tmp/pids-cxp.txt |  xargs -r kill"
+
+- name: wait_for_cxp_killed_proc
+  become: true
+  wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+  with_items: "{{ lookup('pipe', 'cat /tmp/pids-cxp.txt')}}"
+  ignore_errors: true
+
+- name: wait_for_cxp_port_ready
+  wait_for:
+    port: 8000
+    state: started
+    timeout: 100

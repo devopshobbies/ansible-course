@@ -1,0 +1,17 @@
+---
+
+- name: Install python3.10
+  command: pyenv install "{{py_version | default('3.10.12')}}"
+  environment:
+    http_proxy: "{{proxy}}"
+    https_proxy: "{{proxy}}"
+    HTTP_PROXY: "{{proxy}}"
+    HTTPS_PROXY: "{{proxy}}"
+    PATH: "{{PYENV_PATH}}"
+      
+
+- name: make the py version default for the system
+  command: pyenv global "{{py_version | default('3.10.12')}}"
+  environment:
+    PATH: "{{PYENV_PATH}}"
+

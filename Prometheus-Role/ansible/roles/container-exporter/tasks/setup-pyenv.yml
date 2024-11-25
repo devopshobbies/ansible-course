@@ -1,0 +1,31 @@
+
+- name: check if pyenv is installed
+  command: 
+    cmd: pyenv --version
+  environment:
+    PATH: "{{PATH}}"
+  register: is_pyenv
+
+- name: install pyenv
+  command: curl https://pyenv.run | bash
+  when: is_pyenv.rc != 0
+
+    
+- name: add pyenv to path
+  shell: |
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc \
+    echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc \
+    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+  when: is_pyenv.rc != 0
+
+    
+- name: Install required libraries
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop: "{{required_packages}}"
+  when: ansible_os_family == 'Debian'
+
+- include_tasks: "{{tasks_dir}}/install-python.yml"

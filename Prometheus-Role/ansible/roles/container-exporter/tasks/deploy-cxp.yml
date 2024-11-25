@@ -1,0 +1,8 @@
+- name: trigger all the notified handlers
+  meta: flush_handlers
+
+- name: deploy cxp
+  shell:
+    cmd: bash -c 'source {{pyvenv_path}}/bin/activate && bash start.sh &'
+    chdir: "{{repo_path}}"
+  notify: wait_for_cxp_port_ready

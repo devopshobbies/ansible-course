@@ -1,0 +1,16 @@
+- name: wait for the metrics to be ready
+  wait_for:
+    timeout: 3
+
+- name: download the metrics page 
+  ignore_errors: true
+  uri:
+    url: 'http://localhost:8000/metrics'
+    return_content: true
+    
+- name: fetch the metrics
+  ignore_errors: true
+  fetch:
+    src: "{{target_dir}}/metrics.txt"
+    dest: "{{playbook_dir}}/media/metrics.txt"
+    flat: yes

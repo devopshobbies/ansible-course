@@ -1,0 +1,4 @@
+- name: checkout to the repo
+  git: 
+    repo: "{{repo_addr}}"
+    dest: "{{repo_path}}"

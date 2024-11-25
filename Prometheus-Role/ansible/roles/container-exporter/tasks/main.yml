@@ -1,0 +1,19 @@
+- name: check the python version
+  shell:
+    cmd: python3 --version | awk '{print $2}'
+  register: python_version
+
+# - debug:
+#     msg: "{{python_version}}"
+
+- include_tasks: "{{task_dir}}/setup-pyenv.yml"
+  when: python_version.stdout is version('3.10.12', '<')   
+
+- include_tasks: "{{task_dir}}/get-cxp.yml"
+
+- import_tasks: "{{role_path}}/tasks/build-cxp.yml"
+  # tags: debug_now
+
+- include_tasks: "{{task_dir}}/deploy-cxp.yml"
+
+- include_tasks: "{{task_dir}}/download-metrics.yml"

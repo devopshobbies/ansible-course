@@ -1,0 +1,54 @@
+- name: install required packages
+  apt:
+    name: "{{item}}"
+    state: present
+  loop: "{{packages}}"
+  when: no_pyenv
+
+- name: create virtualenv
+  become_user: "{{ansible_user}}"
+  command: pyenv virtualenv "{{venv_name}}"
+  when: not no_pyenv
+  register: venv_output
+  failed_when: "'already exists' not in venv_output.stderr"
+      
+- fail:
+    msg: "failed with custom message"
+  when : "'already exists' not in venv_output.stderr"
+    
+- name: create venv without pyenv
+  shell: 
+    cmd: python3 -m venv "{{venv_name}}"
+    chdir: "{{repo_path}}"
+  when: no_pyenv
+    
+- name: install requirements.txt
+  pip:
+    requirements: requirements.txt
+    virtualenv: "{{pyvenv_path}}"
+    chdir: "{{repo_path}}"
+  changed_when: true
+  notify: 
+    - kill_cxp_proc
+
+# - name: force trigger all handlers
+#   meta: flush_handlers
+
+- block:
+    - name: Read from the file
+      slurp:
+        src: "/tmp/pi-cxp.txt"
+      register: pids_cxp_output
+
+    - set_fact:
+        pids_cxp: "{{ pids_cxp_output.content | b64decode | split('\n') }}"
+
+    - debug:
+        msg: "hooking wait_for proc handler"
+      changed_when: true
+      notify: wait_for_cxp_killed_proc
+  rescue:
+    - debug:
+        msg: "there is no pid got error: {{ pids_cxp_output }}"
+  tags: debug
+
