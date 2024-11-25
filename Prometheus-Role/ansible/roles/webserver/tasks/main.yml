@@ -1,6 +1,38 @@
 ---
+
+- name: Make sure services are installed
+  become: true
+  apt:
+    name: "{{item}}"
+    state: present
+  loop: "{{packages}}"
+  notify: server_state_on_demand
+
 - name: Copy the Nginx configuration file
   ansible.builtin.copy:
     src: "{{role_path}}/files/nginx.conf"
     dest: /etc/nginx/nginx.conf
   notify: Restart Nginx
+
+- name: Copy the Prometheus nginx server
+  ansible.builtin.template:
+    src: prometheus_proxy.j2
+    dest: "{{nginx_server_dir}}/prometheus.conf"
+  notify: Restart Nginx
+  tags:
+    - setup_nginx_prometheus
+
+- name: ensure default conf absent
+  file:
+    path: "{{item}}"
+    state: absent
+  loop: "{{default_conf_paths}}"
+
+
+
+- name: Get the localhost index
+  get_url:
+    url: "{{reverse_proxy_url}}/prometheus"
+    dest: "{{file_dest}}/prometheus.html"
+  delegate_to: localhost
+  tags: fetch_prom_url

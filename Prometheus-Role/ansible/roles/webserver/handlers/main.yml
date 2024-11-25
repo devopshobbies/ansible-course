@@ -1,4 +1,14 @@
 - name: Restart Nginx
   ansible.builtin.service:
     name: nginx
-    state: restarted
+    state: "{{handler_nginx_state}}"
+
+- name: server_state_on_demand
+  become: true
+  ansible.builtin.service:
+    name: "{{item.name}}"
+    state: "{{item.state}}"
+    enabled: "{{item.enabled}}"
+  loop: "{{services.webservers}}"
+  loop_control:
+    label: "{{item.name}} is the package name"

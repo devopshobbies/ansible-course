@@ -1,0 +1,30 @@
+nic_name: enp0s8
+
+domain: "{{hostvars['node002']['ansible_' ~ nic_name]['ipv4']['address']}}"
+node003_ip: "{{hostvars['node003']['ansible_' ~ nic_name]['ipv4']['address']}}"
+packages:
+  - nginx
+  - apache2
+
+
+services:
+  webservers:
+    - name: apache2
+      state: stopped
+      enabled: no
+
+    - name: nginx
+      state: started
+      enabled: yes
+
+handler_nginx_state: restarted
+reverse_proxy_url: "http://node002"
+file_dest: "/home/ubuntu"
+nginx_server_dir: /etc/nginx/conf.d
+
+nginx: "/etc/nginx"
+
+default_conf_paths:
+  - "{{nginx}}/sites-enabled/default.conf"
+  - "{{nginx}}/site-available/default.conf"
+  - "{{nginx_server_dir}}/default.conf"
