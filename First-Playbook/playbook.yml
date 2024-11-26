@@ -9,7 +9,7 @@
 
     - name: Print hello ansible
       debug:
-        msg: "Hello Ansibler"
+        msg: "Hello Ansible"
     
     #  legacy way of running shell commands (for specific use-cases e.g (piping , etc))
     - name: Get hostnames
