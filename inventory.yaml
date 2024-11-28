@@ -1,0 +1,15 @@
+all:
+  children:
+    apache:
+      hosts:
+        node001: {}
+        node002: {}
+    nginx:
+      hosts:
+        node003: {}
+    webservers:
+      children:
+        apache: {}
+        nginx: {}
+      vars:
+        ansible_user: ubuntu
